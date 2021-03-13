@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import AddBookmark from './AddBookmark/AddBookmark';
+import EditBookmark from './EditBookmark/EditBookmark';
 import BookmarkList from './BookmarkList/BookmarkList';
 import Nav from './Nav/Nav';
 import config from './config';
@@ -16,7 +17,6 @@ class App extends Component {
   };
 
   setBookmarks = bookmarks => {
-    console.log(bookmarks)
     this.setState({
       bookmarks,
       error: null,
@@ -37,6 +37,17 @@ class App extends Component {
         bookmarks: newBookmarks
       })
   }
+
+  updateBookmark = updatedBookmark => {
+      const newBookmarks = this.state.articles.map(bookmark =>
+        (bookmark.id === updatedBookmark.id)
+          ? updatedBookmark
+          : bookmark
+      )
+      this.setState({
+        articles: newBookmarks
+      })
+    };
 
   componentDidMount() {
     fetch(config.API_ENDPOINT, {
@@ -61,10 +72,11 @@ class App extends Component {
       bookmarks: this.state.bookmarks,
       addBookmark: this.addBookmark,
       deleteBookmark: this.deleteBookmark,
+      updateBookmark: () => {},
     }
     return (
       <main className='App'>
-        <Rating value={6}/>
+        <Rating value={4}/>
         <h1>Bookmarks!</h1>
           <BookmarksContext.Provider value={contextValue}>
             <Nav />
@@ -72,6 +84,10 @@ class App extends Component {
             <Route
               path='/add-bookmark'
               component={AddBookmark}
+            />
+            <Route
+              path='/edit-bookmark/:id'
+              component={EditBookmark}
             />
             <Route
               exact
